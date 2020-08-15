@@ -13,7 +13,6 @@ import select
 import time
 import sys
 
-
 class MudServer(object):
     """A basic server for text-based Multi-User Dungeon (MUD) games.
 
@@ -183,7 +182,12 @@ class MudServer(object):
         """
         # we make sure to put a newline on the end so the client receives the
         # message on its own line
-        self._attempt_send(to, message+"\n\r")
+        self._attempt_send(to, message + "\n\r")
+
+    def close_socket(self, id):
+        """ closes the socket."""
+        self._clients[id].socket.shutdown(socket.SHUT_RDWR)
+
 
     def shutdown(self):
         """Closes down the server, disconnecting all clients and

@@ -21,23 +21,29 @@ Some ideas for things to try adding:
 author: Mark Frimston - mfrimston@gmail.com
 """
 
-import time
+import json
+import os
 
 # import the MUD server class
 from mudserver import MudServer
+from constants import PROJECT_ROOT
+
+from sqlalchemy.orm import sessionmaker
+from sqlalchemy import create_engine
+
+from models.player import Player
+
+from connection import Connection
+
+engine = create_engine('postgres://postgres:posgres@localhost/postgres', echo=True)
+Session = sessionmaker(bind = engine)
+session = Session()
 
 
 # structure defining the rooms in the game. Try adding more rooms to the game!
-rooms = {
-    "Tavern": {
-        "description": "You're in a cozy tavern warmed by an open fire.",
-        "exits": {"outside": "Outside"},
-    },
-    "Outside": {
-        "description": "You're standing outside a tavern. It's raining.",
-        "exits": {"inside": "Tavern"},
-    }
-}
+with open(os.path.join(PROJECT_ROOT, 'lib/world/rooms.json')) as roomfile:
+    rooms = json.loads(roomfile.read())
+
 
 # stores the players in the game
 players = {}
@@ -64,13 +70,10 @@ while True:
         # The dictionary key is the player's id number. We set their room to
         # None initially until they have entered a name
         # Try adding more player stats - level, gold, inventory, etc
-        players[id] = {
-            "name": None,
-            "room": None,
-        }
+        players[id] = Connection()
 
         # send the new player a prompt for their name
-        mud.send_message(id, "What is your name?")
+        mud.send_message(id, "By what name do you wish to be known?")
 
     # go through any recently disconnected players
     for id in mud.get_disconnected_players():
@@ -98,18 +101,42 @@ while True:
         if id not in players:
             continue
 
+        connection = players[id]
         # if the player hasn't given their name yet, use this first command as
         # their name and move them to the starting room.
-        if players[id]["name"] is None:
-
-            players[id]["name"] = command
-            players[id]["room"] = "Tavern"
+        if not connection.start_room:  # Has not been assigned start room, hasn't made it passed auth.
+            if not connection.name:
+                connection.name = command
+                if len(session.query(Player).filter(Player.name == command).all()) == 0:
+                    connection.new_player = True
+                    mud.send_message(id, f"Give me a password for \"{connection.name}\": ")
+                else:
+                    mud.send_message(id, "Password:")
+                continue
+            elif not connection.password:
+                if connection.new_player:
+                    connection.password = command
+                    new_player = Player(name=connection.name, password=connection.password)
+                    session.add(new_player)
+                    session.commit()
+                    mud.send_message(id, "Ok... registered")
+                else:
+                    connection.password = command
+                    if len(session.query(Player).filter(Player.name == command and Player.password == connection.password).all()) == 0:
+                        mud.send_message(id, "Bad Password, Goodbye")
+                        mud.close_socket(id)
+                        del(players[id])
+                    continue
+            else:
+                mud.send_message(id, "Success!  PRESS ANY KEY TO CONTINUE")
+                connection.start_room = "Tavern"
+                continue
 
             # go through all the players in the game
             for pid, pl in players.items():
                 # send each player a message to tell them about the new player
                 mud.send_message(pid, "{} entered the game".format(
-                                                        players[id]["name"]))
+                                                        players[id].name))
 
             # send the new player a welcome message
             mud.send_message(id, "Welcome to the game, {}. ".format(
