@@ -1,6 +1,6 @@
 import bcrypt
 
-class Connection:
+class ConnectionSession:
     name: str
     password: str
     new_player: bool

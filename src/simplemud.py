@@ -33,9 +33,9 @@ from sqlalchemy import create_engine
 
 from models.player import Player
 
-from connection import Connection
+from connection_session import ConnectionSession
 
-engine = create_engine('postgres://postgres:posgres@localhost/postgres', echo=True)
+engine = create_engine('postgres://postgres:postgres@localhost/postgres', echo=True)
 Session = sessionmaker(bind = engine)
 session = Session()
 
@@ -70,7 +70,7 @@ while True:
         # The dictionary key is the player's id number. We set their room to
         # None initially until they have entered a name
         # Try adding more player stats - level, gold, inventory, etc
-        players[id] = Connection()
+        players[id] = ConnectionSession()
 
         # send the new player a prompt for their name
         mud.send_message(id, "By what name do you wish to be known?")
