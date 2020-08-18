@@ -101,35 +101,36 @@ while True:
         if id not in players:
             continue
 
-        connection = players[id]
+        connection_session = players[id]
         # if the player hasn't given their name yet, use this first command as
         # their name and move them to the starting room.
-        if not connection.start_room:  # Has not been assigned start room, hasn't made it passed auth.
-            if not connection.name:
-                connection.name = command
+        if not connection_session.start_room:  # Has not been assigned start room, hasn't made it passed auth.
+            if not connection_session.name:
+                connection_session.name = command
                 if len(session.query(Player).filter(Player.name == command).all()) == 0:
-                    connection.new_player = True
-                    mud.send_message(id, f"Give me a password for \"{connection.name}\": ")
+                    connection_session.new_player = True
+                    mud.send_message(id, f"Give me a password for \"{connection_session.name}\": ")
                 else:
                     mud.send_message(id, "Password:")
                 continue
-            elif not connection.password:
-                if connection.new_player:
-                    connection.password = command
-                    new_player = Player(name=connection.name, password=connection.password)
+            elif not connection_session.password:
+                if connection_session.new_player:
+                    connection_session.password = command
+                    new_player = Player(name=connection_session.name, password=connection_session.password)
                     session.add(new_player)
                     session.commit()
                     mud.send_message(id, "Ok... registered")
                 else:
-                    connection.password = command
-                    if len(session.query(Player).filter(Player.name == command and Player.password == connection.password).all()) == 0:
+                    connection_session.password = command
+                    if len(session.query(Player).filter(Player.name == connection_session.name,
+                                                        Player.password == connection_session.password).all()) == 0:
                         mud.send_message(id, "Bad Password, Goodbye")
                         mud.close_socket(id)
                         del(players[id])
                     continue
             else:
                 mud.send_message(id, "Success!  PRESS ANY KEY TO CONTINUE")
-                connection.start_room = "Tavern"
+                connection_session.start_room = "Tavern"
                 continue
 
             # go through all the players in the game
