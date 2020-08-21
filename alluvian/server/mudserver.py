@@ -13,6 +13,12 @@ import select
 import time
 import sys
 
+import django
+
+import os
+os.environ.setdefault("DJANGO_SETTINGS_MODULE", 'alluvian.settings')
+
+
 class MudServer(object):
     """A basic server for text-based Multi-User Dungeon (MUD) games.
 
@@ -23,6 +29,9 @@ class MudServer(object):
     The 'update' method should be called in a loop to keep the server
     running.
     """
+
+    django.setup()
+
 
     # An inner class which is instantiated for each connected client to store
     # info about them
@@ -101,7 +110,7 @@ class MudServer(object):
         # this requires root permissions, so we use a higher arbitrary port
         # number instead: 1234. Address 0.0.0.0 means that we will bind to all
         # of the available network interfaces
-        self._listen_socket.bind(("0.0.0.0", 1234))
+        self._listen_socket.bind(("0.0.0.0", 4000))
 
         # set to non-blocking mode. This means that when we call 'accept', it
         # will return immediately without waiting for a connection
@@ -202,9 +211,6 @@ class MudServer(object):
         self._listen_socket.close()
 
     def _attempt_send(self, clid, data):
-        # python 2/3 compatability fix - convert non-unicode string to unicode
-        if sys.version < '3' and type(data) != unicode:
-            data = unicode(data, "latin1")
         try:
             # look up the client in the client map and use 'sendall' to send
             # the message string on the socket. 'sendall' ensures that all of

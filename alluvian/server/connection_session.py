@@ -1,16 +1,18 @@
 import bcrypt
+import players
 
 class ConnectionSession:
     name: str
     password: str
     new_player: bool
-    start_room: str
+    room: str
+    player: players.models.Player
 
     def __init__(self):
         self.name = None
         self.password = None
         self.new_player = None
-        self.start_room = None
+        self.room = None
 
     @property
     def name(self) -> str:
@@ -29,7 +31,7 @@ class ConnectionSession:
         if password:
             salt = bcrypt.gensalt()
             hashed = bcrypt.hashpw(password.encode('utf-8'), salt)
-            self.__password = hashed
+            self.__password = str(hashed)
         else:
             self.__password = None
 
@@ -42,9 +44,9 @@ class ConnectionSession:
         self.__new_player = new_player
 
     @property
-    def start_room(self) -> bool:
-        return self.__start_room
+    def room(self) -> bool:
+        return self.__room
 
-    @start_room.setter
-    def start_room(self, start_room) -> None:
-        self.__start_room = start_room
+    @room.setter
+    def room(self, room) -> None:
+        self.__room = room
