@@ -31,18 +31,18 @@ from alluvian.commands.command_interpreter import CommandInterpreter
 from players.models import Player
 from alluvian.server.connection_session import ConnectionSession
 
-# structure defining the rooms in the game. Try adding more rooms to the game!
-with open(os.path.join(PROJECT_ROOT, 'lib/world/rooms.json')) as roomfile:
-    rooms = json.loads(roomfile.read())
+import alluvian.globals
 
-
-# stores the players in the game
-players = {}
+alluvian.globals.players = {}
 
 # start the server
 mud = MudServer()
 
 COMMANDS = CommandInterpreter.build_cmd_list()
+
+# structure defining the rooms in the game. Try adding more rooms to the game!
+with open(os.path.join(PROJECT_ROOT, 'lib/world/rooms.json')) as roomfile:
+    rooms = json.loads(roomfile.read())
 
 # main game loop. We loop forever (i.e. until the program is terminated)
 while True:
@@ -59,7 +59,7 @@ while True:
         # The dictionary key is the player's id number. We set their room to
         # None initially until they have entered a name
         # Try adding more player stats - level, gold, inventory, etc
-        players[id] = ConnectionSession()
+        alluvian.globals.players[id] = ConnectionSession()
 
         # send the new player a prompt for their name
         mud.send_message(id, "By what name do you wish to be known?")
@@ -69,28 +69,28 @@ while True:
 
         # if for any reason the player isn't in the player map, skip them and
         # move on to the next one
-        if id not in players:
+        if id not in alluvian.globals.players:
             continue
 
         # go through all the players in the game
-        for pid, pl in players.items():
+        for pid, pl in alluvian.globals.players.items():
             # send each player a message to tell them about the diconnected
             # player
             mud.send_message(pid, "{} quit the game".format(
-                                                        players[id].name))
+                                                        alluvian.globals.players[id].name))
 
         # remove the player's entry in the player dictionary
-        del(players[id])
+        del(alluvian.globals.players[id])
 
     # go through any new commands sent from players
     for id, command, params in mud.get_commands():
 
         # if for any reason the player isn't in the player map, skip them and
         # move on to the next one
-        if id not in players:
+        if id not in alluvian.globals.players:
             continue
 
-        connection_session = players[id]
+        connection_session = alluvian.globals.players[id]
         # if the player hasn't given their name yet, use this first command as
         # their name and move them to the starting room.
         if not connection_session.room:  # Has not been assigned start room, hasn't made it passed auth.
@@ -117,25 +117,25 @@ while True:
                     if player.check_pw(command):
                         mud.send_message(id, "Bad Password, Goodbye")
                         mud.close_socket(id)
-                        del(players[id])
+                        del(alluvian.globals.players[id])
                     else:
                         mud.send_message(id, "Success!  PRESS ANY KEY TO CONTINUE")
                         connection_session.room = "Tavern"
                     continue
 
             # go through all the players in the game
-            for pid, pl in players.items():
+            for pid, pl in alluvian.globals.players.items():
                 # send each player a message to tell them about the new player
                 mud.send_message(pid, "{} entered the game".format(
-                                                        players[id].name))
+                                                        alluvian.globals.players[id].name))
 
             # send the new player a welcome message
             mud.send_message(id, "Welcome to the game, {}. ".format(
-                                                           players[id].name)
+                                                           alluvian.globals.players[id].name)
                              + "Type 'help' for a list of commands. Have fun!")
 
             # send the new player the description of their current room
-            mud.send_message(id, rooms[players[id].room]["description"])
+            mud.send_message(id, rooms[alluvian.globals.players[id].room]["description"])
 
         # each of the possible commands is handled below. Try adding new
         # commands to the game!
@@ -148,3 +148,4 @@ while True:
                 cmd(mud_server=mud, sessions=connection_session, actor=id).execute()
             else:
                 mud.send_message(id, "Huh?!")
+

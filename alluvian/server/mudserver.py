@@ -11,7 +11,6 @@ author: Mark Frimston - mfrimston@gmail.com
 import socket
 import select
 import time
-import sys
 
 import django
 
