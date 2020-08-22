@@ -9,4 +9,3 @@ class PlayerType(Enum):
     IMM = 2
     GOD = 3
     IMPL = 4
-

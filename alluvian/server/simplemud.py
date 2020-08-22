@@ -30,21 +30,21 @@ from alluvian.constants import PROJECT_ROOT
 from alluvian.commands.command_interpreter import CommandInterpreter
 from players.models import Player
 from alluvian.server.connection_session import ConnectionSession
+from world.models import Room
 
 import alluvian.globals
 
+# Initialize global variables
 alluvian.globals.players = {}
+alluvian.globals.rooms = {}
 
-# start the server
+# Start Mud
 mud = MudServer()
 
-COMMANDS = CommandInterpreter.build_cmd_list()
+# Load rooms
+alluvian.globals.rooms = dict((o.pk, o) for o in Room.objects.all())
 
-# structure defining the rooms in the game. Try adding more rooms to the game!
-with open(os.path.join(PROJECT_ROOT, 'lib/world/rooms.json')) as roomfile:
-    rooms = json.loads(roomfile.read())
-
-# main game loop. We loop forever (i.e. until the program is terminated)
+# Main Game Loop
 while True:
 
     # 'update' must be called in the loop to keep the game running and give
@@ -106,9 +106,11 @@ while True:
                 if connection_session.new_player:
                     connection_session.password = command
                     try:
-                        Player.objects.create(name=connection_session.name,
-                                              password=connection_session.password)
+                        player = Player.objects.create(name=connection_session.name,
+                                                       password=connection_session.password)
                         mud.send_message(id, "Ok... registered")
+                        connection_session.room = 1
+                        connection_session.player = player
                     except:
                         mud.send_message(id, "Error creating player.")
                 else:
@@ -120,7 +122,8 @@ while True:
                         del(alluvian.globals.players[id])
                     else:
                         mud.send_message(id, "Success!  PRESS ANY KEY TO CONTINUE")
-                        connection_session.room = "Tavern"
+                        connection_session.room = 1
+                        connection_session.player = player
                     continue
 
             # go through all the players in the game
@@ -135,7 +138,7 @@ while True:
                              + "Type 'help' for a list of commands. Have fun!")
 
             # send the new player the description of their current room
-            mud.send_message(id, rooms[alluvian.globals.players[id].room]["description"])
+            mud.send_message(id, alluvian.globals.rooms[alluvian.globals.players[id].room].description)
 
         # each of the possible commands is handled below. Try adding new
         # commands to the game!
@@ -143,9 +146,9 @@ while True:
             if not command:
                 mud.send_message(id, "\n")
                 continue
-            cmd = CommandInterpreter.cmd_search(command)
+            cmd, parsed_cmd = CommandInterpreter.cmd_search(command)
             if cmd:
-                cmd(mud_server=mud, sessions=connection_session, actor=id).execute()
+                cmd(mud_server=mud, sessions=connection_session, actor=id, arguments=parsed_cmd['args']).execute()
             else:
                 mud.send_message(id, "Huh?!")
 

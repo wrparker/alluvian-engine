@@ -1,10 +1,20 @@
-{
-    "Tavern": {
-        "description": "You're in a cozy tavern warmed by an open fire.",
-        "exits": {"outside": "Outside"}
-    },
-    "Outside": {
-        "description": "You're standing outside a tavern. It's raining.",
-        "exits": {"inside": "Tavern"}
+[
+  {
+    "model": "world.room",
+    "pk": 1,
+    "fields": {
+        "name": "Bazookia's keep",
+        "description": "This is where baz hangs out",
+        "exit_north": 2
     }
-}
+  },
+  {
+    "model": "world.room",
+    "pk": 2,
+    "fields": {
+        "name": "Bazookia second place",
+        "description": "This is the other room",
+        "exit_south": 1
+    }
+  }
+]

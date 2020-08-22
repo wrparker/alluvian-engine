@@ -50,3 +50,12 @@ class ConnectionSession:
     @room.setter
     def room(self, room) -> None:
         self.__room = room
+
+    @property
+    def player(self) -> bool:
+        return self.__player
+
+    @player.setter
+    def player(self, player) -> None:
+        self.__player = player
+

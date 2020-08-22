@@ -38,7 +38,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'players', # player module.
-    'server', # needed for db
+    'world',
+    'server', # needed for db,
 ]
 
 MIDDLEWARE = [
@@ -121,9 +122,6 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
-MIGRATION_MODULES = {
-    'players': 'migrations'
-}
 # DJANGO SETTINGS ABOVE
 # ----------------------------
 # MUD SETTINGS
