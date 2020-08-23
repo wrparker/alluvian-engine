@@ -17,6 +17,7 @@ import django
 import os
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", 'alluvian.settings')
 
+from alluvian.util.colors import Colors
 
 class MudServer(object):
     """A basic server for text-based Multi-User Dungeon (MUD) games.
@@ -190,6 +191,10 @@ class MudServer(object):
         """
         # we make sure to put a newline on the end so the client receives the
         # message on its own line
+
+        for col in Colors.REGEX_MAP:
+            message = message.replace(col[0], col[1])
+
         self._attempt_send(to, message + "\n\r")
 
     def close_socket(self, id):
