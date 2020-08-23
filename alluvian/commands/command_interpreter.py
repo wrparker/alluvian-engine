@@ -34,28 +34,13 @@ class CommandInterpreter:
         return cmd_list
 
     @staticmethod
-    def cmd_search(parsed_cmd) -> MudCommand:
-        parsed_cmd = CommandInterpreter.parse_command(parsed_cmd.lower())
+    def cmd_search(input) -> MudCommand:
+        input = input.lower()
         commands = CommandInterpreter.build_cmd_list()
 
         for cmd in commands:
-            if parsed_cmd['cmd'] == cmd['key']:
-                return cmd['module'], parsed_cmd
-            if parsed_cmd['cmd'] in cmd['aliases']:
-                return cmd['module'], parsed_cmd
-        return MudCommand, parsed_cmd
-
-    @staticmethod
-    def parse_command(command):
-        command = command.strip()
-        pieces = command.split(' ', 1)
-        cmd = pieces[0].lower()
-        try:
-            args = pieces[1]
-        except IndexError:
-            args = None
-
-        return {
-            'cmd': cmd,
-            'args': args
-        }
+            if input == cmd['key']:
+                return cmd['module']
+            if input in cmd['aliases']:
+                return cmd['module']
+        return MudCommand

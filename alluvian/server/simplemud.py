@@ -146,9 +146,11 @@ while True:
             if not command:
                 mud.send_message(id, "\n")
                 continue
-            cmd, parsed_cmd = CommandInterpreter.cmd_search(command)
+            cmd = CommandInterpreter.cmd_search(command)
             if cmd:
-                cmd(mud_server=mud, sessions=connection_session, actor=id, arguments=parsed_cmd['args']).execute()
+                cmd(mud_server=mud,
+                    actor=id,
+                    arguments=params).execute()
             else:
                 mud.send_message(id, "Huh?!")
 

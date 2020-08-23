@@ -6,5 +6,5 @@ class Say(MudCommand):
     aliases = ['sa']
 
     def execute(self):
-        self.msg("You say: ")
-        self.msg_room("{} says: ".format(self.player.name))
+        self.msg("You say: {}".format(self.arguments))
+        self.msg_room("{} says: {}".format(self.player.name, self.arguments))

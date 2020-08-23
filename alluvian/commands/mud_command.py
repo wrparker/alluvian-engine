@@ -24,9 +24,8 @@ class MudCommand(object):
     aliases = []
     level = PlayerType.PLAYER
 
-    def __init__(self, mud_server, sessions, actor, arguments):
+    def __init__(self, mud_server, actor, arguments):
         self.mud_server = mud_server
-        self.sessions = sessions
         self.actor = actor
         self.arguments = arguments
         self.session = alluvian.globals.players[actor]
@@ -47,5 +46,6 @@ class MudCommand(object):
 
     def msg_room(self, msg) -> None:
         for connection_id, player in self.room.get_players().items():
-            if player.id != self.actor:
-                self.mud_server.send_message(player.id, msg)
+            if connection_id != self.actor:
+                self.mud_server.send_message(connection_id, msg)
+
