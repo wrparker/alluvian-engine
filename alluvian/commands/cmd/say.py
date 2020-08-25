@@ -8,10 +8,10 @@ class Say(MudCommand):
     aliases = ['sa']
 
     def execute(self):
-        self.msg("{}You say, '{}{}'.".format(Colors.fg.BCYAN,
+        self.msg("{}You say, '{}'.{}".format(Colors.fg.BCYAN,
                                           self.arguments,
                                           Colors.fg.RESET))
-        self.msg_room("{}{} says, '{}{}'.".format(Colors.fg.BCYAN,
+        self.msg_room("{}{} says, '{}'.{}".format(Colors.fg.BCYAN,
                                                self.player.name,
                                                self.arguments,
                                                Colors.fg.RESET))
