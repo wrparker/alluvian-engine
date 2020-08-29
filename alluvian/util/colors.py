@@ -38,7 +38,31 @@ class Colors:
         REVERSE   = '\033[7m'
 
     REGEX_MAP = [
+        ('@n', fg.RESET),
+
+        ('@d', fg.BLACK),
+        ('@D', fg.BBLACK),
+        ('@0', bg.BLACK),
+        ('@b', fg.BLUE),
+        ('@B', fg.BBLUE),
+        ('@1', bg.BLUE),
+        ('@g', fg.GREEN),
+        ('@G', fg.BGREEN),
+        ('@c', fg.CYAN),
+        ('@C', fg.BCYAN),
+        ('@3', bg.CYAN),
         ('@r', fg.RED),
         ('@R', fg.BRED),
-        ('@n', fg.RESET)
+        ('@4', bg.RED),
+        ('@m', fg.MAGENTA),
+        ('@M', fg.BMAGENTA),
+        ('@5', bg.MAGENTA),
+        ('@y', fg.YELLOW),
+        ('@Y', fg.BYELLOW),
+        ('@6', bg.YELLOW),
+        ('@w', fg.WHITE),
+        ('@W', fg.BWHITE),
+        ('@7', bg.WHITE),
+
+        #TODO: Add styles
     ]
