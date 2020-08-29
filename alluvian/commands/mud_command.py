@@ -8,7 +8,7 @@ from world.models import Room
 
 import alluvian.globals
 '''
-The basic mud command.  All regular commands shoudl extend the mudcommand such that they are classes.
+The basic mud command.  All regular commands should extend the mudcommand such that they are classes.
 '''
 class MudCommand(object):
     mud_server: MudServer
@@ -48,4 +48,3 @@ class MudCommand(object):
         for connection_id, player in self.room.get_players().items():
             if connection_id != self.actor:
                 self.mud_server.send_message(connection_id, msg)
-
