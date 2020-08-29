@@ -26,10 +26,10 @@ import os
 
 # import the MUD server class
 from alluvian.server.mudserver import MudServer
-from alluvian.constants import PROJECT_ROOT
 from alluvian.commands.command_interpreter import CommandInterpreter
 from players.models import Player
 from alluvian.server.connection_session import ConnectionSession
+from constants import LoginState
 from world.models import Room
 
 import alluvian.globals
@@ -91,57 +91,58 @@ while True:
             continue
 
         connection_session = alluvian.globals.players[id]
-        # if the player hasn't given their name yet, use this first command as
-        # their name and move them to the starting room.
-        if not connection_session.room:  # Has not been assigned start room, hasn't made it passed auth.
-            if not connection_session.name:
-                connection_session.name = command
-                if Player.objects.filter(name=command).count() == 0:
-                    connection_session.new_player = True
-                    mud.send_message(id, f"Give me a password for \"{connection_session.name}\": ")
+        if not connection_session.login_state == LoginState.AUTHENTICATED:  # Login Menu
+            if connection_session.login_state == LoginState.GET_NAME:
+                connection_session.name = command.title()
+                if not command.isalpha():
+                    mud.send_message(id, "That name is invalid, try again: ")
+                elif Player.objects.filter(name=connection_session.name).count() == 0:
+                    mud.send_message(id, f'Did I get that right, {connection_session.name}? (Y/N)')
+
+                    connection_session.login_state = LoginState.NEW_PLAYER_PROMPT
                 else:
-                    mud.send_message(id, "Password:")
-                continue
-            elif not connection_session.password:
-                if connection_session.new_player:
-                    connection_session.password = command
-                    try:
-                        player = Player.objects.create(name=connection_session.name,
-                                                       password=connection_session.password)
-                        mud.send_message(id, "Ok... registered")
-                        connection_session.room = 1
-                        connection_session.player = player
-                    except:
-                        mud.send_message(id, "Error creating player.")
+                    mud.send_message(id, 'Password: ')
+                    connection_session.name = connection_session.name
+                    connection_session.login_state = LoginState.PASSWORD_INPUT
+            elif connection_session.login_state == LoginState.NEW_PLAYER_PROMPT:
+                if command.lower() == 'y':
+                    mud.send_message(id, f"Ok, give me a password for {connection_session.name}:")
+                    connection_session.login_state = LoginState.NEW_PLAYER_PASSWORD
                 else:
-                    connection_session.password = command
-                    player = Player.objects.get(name=connection_session.name)
-                    if not player.check_pw(command):  # have to check unhashed.
-                        mud.send_message(id, "Bad Password, Goodbye")
+                    mud.send_message(id, 'By what name do you wish to be known?')
+                    connection_session.login_state = LoginState.GET_NAME
+
+            elif connection_session.login_state == LoginState.NEW_PLAYER_PASSWORD:
+                connection_session.password = command
+                try:
+                    player = Player.objects.create(name=connection_session.name,
+                                                   password=connection_session.password)
+                    mud.send_message(id, f"Congratulations!  We've registered {player.name}.")
+                    connection_session.room = 1
+                    connection_session.player = player
+                    connection_session.login_state = LoginState.AUTHENTICATED
+                    mud.send_message(id, alluvian.globals.rooms[alluvian.globals.players[id].room].description)
+                except:
+                    mud.send_message(id, "Error creating player.")
+
+            elif connection_session.login_state == LoginState.PASSWORD_INPUT:
+                player = Player.objects.get(name=connection_session.name)
+                if not player.check_pw(command):  # have to check unhashed.
+                    connection_session.bad_auth_attempts = connection_session.bad_auth_attempts + 1
+                    mud.send_message(id, "Wrong password, try again: ")
+                    if connection_session.bad_auth_attempts >= 3:
+                        mud.send_message(id, "Exceeded allowed password attempts, hacking attempt logged...")
                         mud.close_socket(id)
-                        del(alluvian.globals.players[id])
-                    else:
-                        mud.send_message(id, "Success!  PRESS ANY KEY TO CONTINUE")
-                        connection_session.room = 1
-                        connection_session.player = player
-                    continue
+                        del (alluvian.globals.players[id])
+                else:
+                    mud.send_message(id, "Logging you in ... \r\n")
+                    connection_session.room = 1
+                    connection_session.player = player
+                    connection_session.login_state = LoginState.AUTHENTICATED
+                    mud.send_message(id, alluvian.globals.rooms[alluvian.globals.players[id].room].description)
 
-            # go through all the players in the game
-            for pid, pl in alluvian.globals.players.items():
-                # send each player a message to tell them about the new player
-                mud.send_message(pid, "{} entered the game".format(
-                                                        alluvian.globals.players[id].name))
 
-            # send the new player a welcome message
-            mud.send_message(id, "Welcome to the game, {}. ".format(
-                                                           alluvian.globals.players[id].name)
-                             + "Type 'help' for a list of commands. Have fun!")
-
-            # send the new player the description of their current room
-            mud.send_message(id, alluvian.globals.rooms[alluvian.globals.players[id].room].description)
-
-        # each of the possible commands is handled below. Try adding new
-        # commands to the game!
+        # Command Handler for default state.
         else:
             if not command:
                 mud.send_message(id, "\n")

@@ -9,3 +9,12 @@ class PlayerType(Enum):
     IMM = 2
     GOD = 3
     IMPL = 4
+
+
+class LoginState(Enum):
+    GET_NAME = 0
+    NEW_PLAYER_PROMPT = 1
+    NEW_PLAYER_PASSWORD = 2
+    PASSWORD_INPUT = 3
+    BAD_PASSWORD = 4
+    AUTHENTICATED = 5

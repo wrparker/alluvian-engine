@@ -1,18 +1,24 @@
 import bcrypt
-import players
+from players.models import Player
+
+from constants import LoginState
+
 
 class ConnectionSession:
     name: str
     password: str
-    new_player: bool
+    player: Player
     room: str
-    player: players.models.Player
+    bad_auth_attempts: int
+    login_state: LoginState
 
     def __init__(self):
         self.name = None
         self.password = None
-        self.new_player = None
         self.room = None
+        self.player = None
+        self.bad_auth_attempts = 0
+        self.login_state = LoginState.GET_NAME
 
     @property
     def name(self) -> str:
@@ -36,12 +42,12 @@ class ConnectionSession:
             self.__password = None
 
     @property
-    def new_player(self) -> bool:
-        return self.__new_player
+    def login_state(self) -> LoginState:
+        return self.__login_state
 
-    @new_player.setter
-    def new_player(self, new_player) -> None:
-        self.__new_player = new_player
+    @login_state.setter
+    def login_state(self, login_state) -> None:
+        self.__login_state = login_state
 
     @property
     def room(self) -> bool:
@@ -59,3 +65,10 @@ class ConnectionSession:
     def player(self, player) -> None:
         self.__player = player
 
+    @property
+    def bad_auth_attempts(self) -> int:
+        return self.__bad_auth_attempts
+
+    @bad_auth_attempts.setter
+    def bad_auth_attempts(self, attempts) -> None:
+        self.__bad_auth_attempts = attempts
