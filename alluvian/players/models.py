@@ -7,14 +7,11 @@ class Player(models.Model):
     name = models.CharField(max_length=255)
     password = models.CharField(max_length=255)
 
-    def set_password(self, password: str) -> None:
-        salt = bcrypt.gensalt()
-        hashed = bcrypt.hashpw(password, salt)
-        self.password = hashed
-
-
     def check_pw(self, password_input: str) -> bool:
-        salt = bcrypt.gensalt()
-        hashed = bcrypt.hashpw(password_input.encode('utf-8'), salt)
-        return hashed == self.password
+        return bcrypt.checkpw(password_input.encode('utf-8'), self.password.encode('utf-8'))
 
+    def __str__(self):
+        return self.name
+
+    def __repr__(self):
+        return self.name

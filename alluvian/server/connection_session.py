@@ -29,9 +29,9 @@ class ConnectionSession:
     @password.setter
     def password(self, password) -> None:
         if password:
-            salt = bcrypt.gensalt()
+            salt = bcrypt.gensalt(12)
             hashed = bcrypt.hashpw(password.encode('utf-8'), salt)
-            self.__password = str(hashed)
+            self.__password = hashed.decode('utf-8')
         else:
             self.__password = None
 

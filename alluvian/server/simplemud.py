@@ -116,7 +116,7 @@ while True:
                 else:
                     connection_session.password = command
                     player = Player.objects.get(name=connection_session.name)
-                    if not player.check_pw(command):
+                    if not player.check_pw(command):  # have to check unhashed.
                         mud.send_message(id, "Bad Password, Goodbye")
                         mud.close_socket(id)
                         del(alluvian.globals.players[id])
