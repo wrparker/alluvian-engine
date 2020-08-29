@@ -2,6 +2,7 @@ from alluvian.commands.mud_command import MudCommand
 
 from alluvian.globals import rooms, players
 
+
 class Look(MudCommand):
     key = 'look'
     aliases = ['l', 'loo']

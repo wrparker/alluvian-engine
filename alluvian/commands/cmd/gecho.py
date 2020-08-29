@@ -1,6 +1,7 @@
 from alluvian.commands.mud_command import MudCommand
 import alluvian.globals
 
+
 class Gecho(MudCommand):
 
     key = 'gecho'

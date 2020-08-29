@@ -2,6 +2,7 @@ from alluvian.commands.mud_command import MudCommand
 
 from alluvian.util.colors import Colors
 
+
 class Say(MudCommand):
 
     key = 'say'
