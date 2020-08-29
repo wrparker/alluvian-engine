@@ -27,9 +27,9 @@ import os
 # import the MUD server class
 from alluvian.server.mudserver import MudServer
 from alluvian.commands.command_interpreter import CommandInterpreter
+from menus.new_connection import NewConnectionMenu, LoginState
 from players.models import Player
 from alluvian.server.connection_session import ConnectionSession
-from constants import LoginState
 from world.models import Room
 
 import alluvian.globals
@@ -91,56 +91,10 @@ while True:
             continue
 
         connection_session = alluvian.globals.players[id]
+
+        # Character Login/Creation Handler
         if not connection_session.login_state == LoginState.AUTHENTICATED:  # Login Menu
-            if connection_session.login_state == LoginState.GET_NAME:
-                connection_session.name = command.title()
-                if not command.isalpha():
-                    mud.send_message(id, "That name is invalid, try again: ")
-                elif Player.objects.filter(name=connection_session.name).count() == 0:
-                    mud.send_message(id, f'Did I get that right, {connection_session.name}? (Y/N)')
-
-                    connection_session.login_state = LoginState.NEW_PLAYER_PROMPT
-                else:
-                    mud.send_message(id, 'Password: ')
-                    connection_session.name = connection_session.name
-                    connection_session.login_state = LoginState.PASSWORD_INPUT
-            elif connection_session.login_state == LoginState.NEW_PLAYER_PROMPT:
-                if command.lower() == 'y':
-                    mud.send_message(id, f"Ok, give me a password for {connection_session.name}:")
-                    connection_session.login_state = LoginState.NEW_PLAYER_PASSWORD
-                else:
-                    mud.send_message(id, 'By what name do you wish to be known?')
-                    connection_session.login_state = LoginState.GET_NAME
-
-            elif connection_session.login_state == LoginState.NEW_PLAYER_PASSWORD:
-                connection_session.password = command
-                try:
-                    player = Player.objects.create(name=connection_session.name,
-                                                   password=connection_session.password)
-                    mud.send_message(id, f"Congratulations!  We've registered {player.name}.")
-                    connection_session.room = 1
-                    connection_session.player = player
-                    connection_session.login_state = LoginState.AUTHENTICATED
-                    mud.send_message(id, alluvian.globals.rooms[alluvian.globals.players[id].room].description)
-                except:
-                    mud.send_message(id, "Error creating player.")
-
-            elif connection_session.login_state == LoginState.PASSWORD_INPUT:
-                player = Player.objects.get(name=connection_session.name)
-                if not player.check_pw(command):  # have to check unhashed.
-                    connection_session.bad_auth_attempts = connection_session.bad_auth_attempts + 1
-                    mud.send_message(id, "Wrong password, try again: ")
-                    if connection_session.bad_auth_attempts >= 3:
-                        mud.send_message(id, "Exceeded allowed password attempts, hacking attempt logged...")
-                        mud.close_socket(id)
-                        del (alluvian.globals.players[id])
-                else:
-                    mud.send_message(id, "Logging you in ... \r\n")
-                    connection_session.room = 1
-                    connection_session.player = player
-                    connection_session.login_state = LoginState.AUTHENTICATED
-                    mud.send_message(id, alluvian.globals.rooms[alluvian.globals.players[id].room].description)
-
+            NewConnectionMenu(id, mud, command)
 
         # Command Handler for default state.
         else:

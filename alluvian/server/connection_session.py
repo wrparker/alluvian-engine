@@ -1,7 +1,7 @@
 import bcrypt
 from players.models import Player
 
-from constants import LoginState
+from menus.new_connection import LoginState
 
 
 class ConnectionSession:
