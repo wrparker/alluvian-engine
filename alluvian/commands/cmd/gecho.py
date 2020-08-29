@@ -5,8 +5,8 @@ import alluvian.globals
 class Gecho(MudCommand):
 
     key = 'gecho'
-    aliases = []
+    aliases = ['gech']
 
     def execute(self):
         for pid, pl in alluvian.globals.players.items():
-            self.mud_server.send_message(pid, 'OK')
+            self.mud_server.send_message(pid, self.arguments)
