@@ -99,7 +99,7 @@ while True:
         # Command Handler for default state.
         else:
             if not command:
-                mud.send_message(id, "\n")
+                mud.send_message(id, "\r\n")
                 continue
             cmd = CommandInterpreter.cmd_search(command)
             if cmd:
@@ -107,5 +107,5 @@ while True:
                     actor=id,
                     arguments=params).execute()
             else:
-                mud.send_message(id, "Huh?!")
+                mud.send_message(id, "Huh?!\r\n")
 

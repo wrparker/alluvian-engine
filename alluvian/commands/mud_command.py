@@ -2,8 +2,8 @@ from typing import List, Dict
 
 from alluvian.server.mudserver import MudServer
 from players.models import Player
+from players.level import Level
 from server.connection_session import ConnectionSession
-from constants import PlayerType
 from world.models import Room
 
 import alluvian.globals
@@ -17,12 +17,12 @@ class MudCommand(object):
     arguments: List[str]
     key: str
     alias: List[str]
-    level: PlayerType
+    level: int
     room: Room
 
     key = ''
     aliases = []
-    level = PlayerType.PLAYER
+    level = 1
 
     def __init__(self, mud_server, actor, arguments):
         self.mud_server = mud_server
