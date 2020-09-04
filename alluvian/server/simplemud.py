@@ -21,14 +21,10 @@ Some ideas for things to try adding:
 author: Mark Frimston - mfrimston@gmail.com
 """
 
-import json
-import os
-
 # import the MUD server class
 from alluvian.server.mudserver import MudServer
 from alluvian.commands.command_interpreter import CommandInterpreter
 from menus.new_connection import NewConnectionMenu, LoginState
-from players.models import Player
 from alluvian.server.connection_session import ConnectionSession
 from world.models import Room
 
@@ -37,6 +33,8 @@ import alluvian.globals
 # Initialize global variables
 alluvian.globals.players = {}
 alluvian.globals.rooms = {}
+
+PROMPT = '> '
 
 # Start Mud
 mud = MudServer()
@@ -98,6 +96,9 @@ while True:
 
         # Command Handler for default state.
         else:
+            # Send player prompt
+            mud.send_message(id, f'{PROMPT}\r\n')
+
             if not command:
                 mud.send_message(id, "\r\n")
                 continue
@@ -108,4 +109,4 @@ while True:
                     arguments=params).execute()
             else:
                 mud.send_message(id, "Huh?!\r\n")
-
+            mud.send_message(id, f'\r\n{PROMPT}')

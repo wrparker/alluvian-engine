@@ -195,7 +195,7 @@ class MudServer(object):
         for col in Colors.REGEX_MAP:
             message = message.replace(col[0], col[1])
 
-        self._attempt_send(to, message + "\n\r")
+        self._attempt_send(to, message)
 
     def close_socket(self, id):
         """ closes the socket."""

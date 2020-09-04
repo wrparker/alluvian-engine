@@ -84,6 +84,7 @@ class NewConnectionMenu(object):
             self.session.player = player
             self.session.login_state = LoginState.AUTHENTICATED
             self.mud.send_message(self.id, alluvian.globals.rooms[alluvian.globals.players[self.id].room].description)
+            self.mud.send_message(self.id, '\r\n')
 
     def authenticated(self) -> None:
         return
