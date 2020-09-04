@@ -8,7 +8,7 @@ from alluvian.commands.mud_command import MudCommand
 
 # TODO: proabbly shouldn't be a static method, would make more sense to remturn obj with set command
 
-class CommandInterpreter:
+class Interpreter:
 
     @staticmethod
     def all_subclasses(cls):
@@ -16,16 +16,16 @@ class CommandInterpreter:
             # Classes have to be imported for subclass detection to work.
             importlib.import_module('commands.cmd.' + modname)
         return set(cls.__subclasses__()).union(
-            [s for c in cls.__subclasses__() for s in CommandInterpreter.all_subclasses(c)])
+            [s for c in cls.__subclasses__() for s in Interpreter.all_subclasses(c)])
 
     @staticmethod
     def get_cmd_classes() -> AbstractSet[MudCommand]:
-        return CommandInterpreter.all_subclasses(MudCommand)
+        return Interpreter.all_subclasses(MudCommand)
 
     @staticmethod
     def build_cmd_list():
         cmd_list = []
-        for cmd in CommandInterpreter.get_cmd_classes():
+        for cmd in Interpreter.get_cmd_classes():
             cmd_list.append({
                 'key': cmd.key.lower(),
                 'aliases': [alias.lower() for alias in cmd.aliases],
@@ -36,7 +36,7 @@ class CommandInterpreter:
     @staticmethod
     def cmd_search(input) -> MudCommand:
         input = input.lower()
-        commands = CommandInterpreter.build_cmd_list()
+        commands = Interpreter.build_cmd_list()
 
         for cmd in commands:
             if input == cmd['key']:

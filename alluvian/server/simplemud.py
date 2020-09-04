@@ -23,7 +23,7 @@ author: Mark Frimston - mfrimston@gmail.com
 
 # import the MUD server class
 from alluvian.server.mudserver import MudServer
-from alluvian.commands.command_interpreter import CommandInterpreter
+from alluvian.commands.interpreter import Interpreter
 from menus.new_connection import NewConnectionMenu, LoginState
 from alluvian.server.connection_session import ConnectionSession
 from world.models import Room
@@ -102,7 +102,7 @@ while True:
             if not command:
                 mud.send_message(id, "\r\n")
                 continue
-            cmd = CommandInterpreter.cmd_search(command)
+            cmd = Interpreter.cmd_search(command)
             if cmd:
                 cmd(mud_server=mud,
                     actor=id,

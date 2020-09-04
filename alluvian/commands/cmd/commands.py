@@ -1,6 +1,6 @@
 from alluvian.commands.mud_command import MudCommand
 import alluvian.globals
-from commands.command_interpreter import CommandInterpreter
+from commands.interpreter import Interpreter
 
 
 class Commands(MudCommand):
@@ -9,7 +9,7 @@ class Commands(MudCommand):
     aliases = ['command', 'cmd']
 
     def execute(self):
-        commands = CommandInterpreter.build_cmd_list()
+        commands = Interpreter.build_cmd_list()
         msg = "The following commands are available to you: \r\n"
 
         for idx, command in enumerate(commands):
