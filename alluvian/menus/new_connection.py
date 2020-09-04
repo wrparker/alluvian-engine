@@ -1,5 +1,6 @@
 from enum import IntEnum
 
+import copy
 import alluvian.globals
 from alluvian.server.mudserver import MudServer
 from players.models import Player
@@ -83,11 +84,24 @@ class NewConnectionMenu(object):
             self.session.room = 1
             self.session.player = player
             self.session.login_state = LoginState.AUTHENTICATED
-            self.mud.send_message(self.id, alluvian.globals.rooms[alluvian.globals.players[self.id].room].description)
+            if not self.check_logged_in():
+                self.mud.send_message(self.id, alluvian.globals.rooms[alluvian.globals.players[self.id].room].description)
             self.mud.send_message(self.id, '\r\n')
 
     def authenticated(self) -> None:
         return
+
+    def check_logged_in(self):
+        for idx, sess in enumerate(alluvian.globals.players):
+            sess = alluvian.globals.players.get(idx)
+            if idx != self.id and sess.login_state == LoginState.AUTHENTICATED and sess.player.name == self.session.name:
+                self.session = copy.deepcopy(alluvian.globals.players[idx])
+                self.mud.send_message(idx, "Multiple login detected, disconnecting you.")
+                self.mud.close_socket(idx)
+                self.mud.send_message(self.id, "You take over your own body, already in use!")
+                return True
+        return False
+
 
 
 
