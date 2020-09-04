@@ -102,7 +102,7 @@ while True:
             if not command:
                 mud.send_message(id, "\r\n")
                 continue
-            cmd = Interpreter.cmd_search(command)
+            cmd = Interpreter.cmd_search(command, alluvian.globals.players[id].player)
             if cmd:
                 cmd(mud_server=mud,
                     actor=id,

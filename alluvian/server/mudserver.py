@@ -194,6 +194,7 @@ class MudServer(object):
 
         for col in Colors.REGEX_MAP:
             message = message.replace(col[0], col[1])
+        message += Colors.fg.RESET
 
         self._attempt_send(to, message)
 

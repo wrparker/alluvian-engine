@@ -1,7 +1,7 @@
 import sys
 import pkgutil
 import importlib
-from typing import List, Set, AbstractSet, Callable, Union
+from typing import List, Set, AbstractSet, Callable, Union, Type
 
 from django.conf import settings
 from alluvian.commands.mud_command import MudCommand
@@ -23,20 +23,21 @@ class Interpreter:
         return Interpreter.all_subclasses(MudCommand)
 
     @staticmethod
-    def build_cmd_list():
+    def build_cmd_list(player):
         cmd_list = []
         for cmd in Interpreter.get_cmd_classes():
-            cmd_list.append({
-                'key': cmd.key.lower(),
-                'aliases': [alias.lower() for alias in cmd.aliases],
-                'module': cmd
-            })
+            if cmd.level <= player.level:
+                cmd_list.append({
+                    'key': cmd.key.lower(),
+                    'aliases': [alias.lower() for alias in cmd.aliases],
+                    'module': cmd
+                 })
         return cmd_list
 
     @staticmethod
-    def cmd_search(input) -> MudCommand:
+    def cmd_search(input, player) -> Type[MudCommand]:
         input = input.lower()
-        commands = Interpreter.build_cmd_list()
+        commands = Interpreter.build_cmd_list(player)
 
         for cmd in commands:
             if input == cmd['key']:

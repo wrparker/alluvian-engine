@@ -9,7 +9,7 @@ class Commands(MudCommand):
     aliases = ['command', 'cmd']
 
     def execute(self):
-        commands = Interpreter.build_cmd_list()
+        commands = Interpreter.build_cmd_list(alluvian.globals.players[self.actor].player)
         msg = "The following commands are available to you: \r\n"
 
         for idx, command in enumerate(commands):
