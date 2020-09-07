@@ -47,4 +47,4 @@ class MudCommand(object):
                 alluvian.globals.mud.send_message(connection_id, msg)
 
     def get_players_in_room(self) -> Dict[str, Player]:
-        return {k: v for k, v in alluvian.globals.players.items() if v.player.room.id == self.room.id}
+        return {k: v for k, v in alluvian.globals.players.items() if hasattr(v.player, 'room') and v.player.room.id == self.room.id}
