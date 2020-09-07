@@ -47,4 +47,5 @@ class MudCommand(object):
                 alluvian.globals.mud.send_message(connection_id, msg)
 
     def get_players_in_room(self) -> Dict[str, Player]:
+        # TODO: probably should have utility funciton that gets logged in players only.
         return {k: v for k, v in alluvian.globals.players.items() if hasattr(v.player, 'room') and v.player.room.id == self.room.id}
