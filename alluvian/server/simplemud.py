@@ -33,11 +33,13 @@ import alluvian.globals
 # Initialize global variables
 alluvian.globals.players = {}
 alluvian.globals.rooms = {}
+alluvian.globals.interpreter = Interpreter()
 
 PROMPT = '> '
 
 # Start Mud
-mud = MudServer()
+alluvian.globals.mud = MudServer()
+mud = alluvian.globals.mud
 
 # Load rooms
 alluvian.globals.rooms = dict((o.pk, o) for o in Room.objects.all())
@@ -92,7 +94,7 @@ while True:
 
         # Character Login/Creation Handler
         if not connection_session.login_state == LoginState.AUTHENTICATED:  # Login Menu
-            NewConnectionMenu(id, mud, command)
+            NewConnectionMenu(id, command)
 
         # Command Handler for default state.
         else:
@@ -102,10 +104,9 @@ while True:
             if not command:
                 mud.send_message(id, "\r\n")
                 continue
-            cmd = Interpreter.cmd_search(command, alluvian.globals.players[id].player)
+            cmd = alluvian.globals.interpreter.cmd_search(command, alluvian.globals.players[id].player)
             if cmd:
-                cmd(mud_server=mud,
-                    actor=id,
+                cmd(actor=id,
                     arguments=params).execute()
             else:
                 mud.send_message(id, "Huh?!\r\n")

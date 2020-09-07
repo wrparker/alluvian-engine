@@ -1,43 +1,42 @@
-import sys
 import pkgutil
 import importlib
-from typing import List, Set, AbstractSet, Callable, Union, Type
+from typing import AbstractSet, Type
 
 from django.conf import settings
 from alluvian.commands.mud_command import MudCommand
 
-# TODO: proabbly shouldn't be a static method, would make more sense to remturn obj with set command
-
 class Interpreter:
 
-    @staticmethod
-    def all_subclasses(cls):
+    cmd_list = []
+
+    def __init__(self):
+        self.cmd_list = self.build_cmd_list()
+
+
+    def all_subclasses(self, cls):
         for importer, modname, ispkg in pkgutil.iter_modules(settings.CMD_PATHS):
             # Classes have to be imported for subclass detection to work.
             importlib.import_module('commands.cmd.' + modname)
         return set(cls.__subclasses__()).union(
-            [s for c in cls.__subclasses__() for s in Interpreter.all_subclasses(c)])
+            [s for c in cls.__subclasses__() for s in self.all_subclasses(c)])
 
-    @staticmethod
-    def get_cmd_classes() -> AbstractSet[MudCommand]:
-        return Interpreter.all_subclasses(MudCommand)
+    def get_cmd_classes(self) -> AbstractSet[MudCommand]:
+        return self.all_subclasses(MudCommand)
 
-    @staticmethod
-    def build_cmd_list(player):
+    def build_cmd_list(self):
         cmd_list = []
-        for cmd in Interpreter.get_cmd_classes():
-            if cmd.level <= player.level:
-                cmd_list.append({
-                    'key': cmd.key.lower(),
-                    'aliases': [alias.lower() for alias in cmd.aliases],
-                    'module': cmd
-                 })
+        for cmd in self.get_cmd_classes():
+            cmd_list.append({
+                'key': cmd.key.lower(),
+                'aliases': [alias.lower() for alias in cmd.aliases],
+                'module': cmd,
+                'level': cmd.level
+             })
         return cmd_list
 
-    @staticmethod
-    def cmd_search(input, player) -> Type[MudCommand]:
+    def cmd_search(self, input, player) -> Type[MudCommand]:
         input = input.lower()
-        commands = Interpreter.build_cmd_list(player)
+        commands = [c for c in self.cmd_list if player.level >= c['level']]
 
         for cmd in commands:
             if input == cmd['key']:
@@ -45,3 +44,8 @@ class Interpreter:
             if input in cmd['aliases']:
                 return cmd['module']
         return MudCommand
+
+    def exec_cmd(self, pid, key, arguments=None):
+        cmd = [c for c in self.cmd_list if c['key'].lower() == key.lower()][0]
+        cmd['module'](pid, arguments).execute()
+

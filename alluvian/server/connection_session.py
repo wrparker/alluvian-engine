@@ -8,14 +8,12 @@ class ConnectionSession:
     name: str
     password: str
     player: Player
-    room: str
     bad_auth_attempts: int
     login_state: LoginState
 
     def __init__(self):
         self.name = None
         self.password = None
-        self.room = None
         self.player = None
         self.bad_auth_attempts = 0
         self.login_state = LoginState.GET_NAME
@@ -48,14 +46,6 @@ class ConnectionSession:
     @login_state.setter
     def login_state(self, login_state) -> None:
         self.__login_state = login_state
-
-    @property
-    def room(self) -> bool:
-        return self.__room
-
-    @room.setter
-    def room(self, room) -> None:
-        self.__room = room
 
     @property
     def player(self) -> bool:

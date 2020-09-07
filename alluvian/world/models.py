@@ -1,9 +1,6 @@
-from typing import Dict
-
 from django.db import models
 
 from players.models import Player
-import globals
 
 class Room(models.Model):
 
@@ -14,7 +11,3 @@ class Room(models.Model):
     exit_south = models.IntegerField(null=True, blank=True)
     exit_east = models.IntegerField(null=True, blank=True)
     exit_west = models.IntegerField(null=True, blank=True)
-
-    def get_players(self) -> Dict[str, Player]:
-        return {k: v for k, v in globals.players.items() if v.room == self.id}
-

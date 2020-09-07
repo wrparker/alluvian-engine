@@ -1,9 +1,6 @@
 from typing import List, Dict
 
-from alluvian.server.mudserver import MudServer
 from players.models import Player
-from players.level import Level
-from server.connection_session import ConnectionSession
 from world.models import Room
 
 import alluvian.globals
@@ -11,8 +8,7 @@ import alluvian.globals
 The basic mud command.  All regular commands should extend the mudcommand such that they are classes.
 '''
 class MudCommand(object):
-    mud_server: MudServer
-    sessions: List[ConnectionSession]
+    sessions: List['ConnectionSession']
     actor: Player
     arguments: List[str]
     key: str
@@ -24,14 +20,15 @@ class MudCommand(object):
     aliases = []
     level = 1
 
-    def __init__(self, mud_server, actor, arguments):
-        self.mud_server = mud_server
+    def __init__(self, actor, arguments=None):
         self.actor = actor
         self.arguments = arguments
         self.session = alluvian.globals.players[actor]
-        self.room = alluvian.globals.rooms[self.session.room]
+        self.room = self.session.player.room
         self.player = self.session.player
 
+    def call_command(self, cmd_class, arguments=None):
+        cmd_class(self.actor, self.arguments).execute()
 
     def help(self):
         return """
@@ -42,9 +39,12 @@ class MudCommand(object):
         self.msg('Huh?!')
 
     def msg(self, msg) -> None:
-        self.mud_server.send_message(self.actor, msg)
+        alluvian.globals.mud.send_message(self.actor, msg)
 
     def msg_room(self, msg) -> None:
-        for connection_id, player in self.room.get_players().items():
+        for connection_id, player in self.get_players_in_room().items():
             if connection_id != self.actor:
-                self.mud_server.send_message(connection_id, msg)
+                alluvian.globals.mud.send_message(connection_id, msg)
+
+    def get_players_in_room(self) -> Dict[str, Player]:
+        return {k: v for k, v in alluvian.globals.players.items() if v.player.room.id == self.room.id}
