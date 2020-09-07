@@ -26,12 +26,13 @@ class Interpreter:
     def build_cmd_list(self):
         cmd_list = []
         for cmd in self.get_cmd_classes():
-            cmd_list.append({
-                'key': cmd.key.lower(),
-                'aliases': [alias.lower() for alias in cmd.aliases],
-                'module': cmd,
-                'level': cmd.level
-             })
+            if cmd.key:
+                cmd_list.append({
+                    'key': cmd.key.lower(),
+                    'aliases': [alias.lower() for alias in cmd.aliases],
+                    'module': cmd,
+                    'level': cmd.level
+                 })
         return cmd_list
 
     def cmd_search(self, input, player) -> Type[MudCommand]:
