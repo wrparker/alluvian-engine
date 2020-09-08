@@ -1,6 +1,7 @@
 from alluvian.commands.mud_command import MudCommand
 import alluvian.globals as globs
 from players.level import Level
+from tabulate import tabulate
 
 class Users(MudCommand):
 
@@ -9,10 +10,15 @@ class Users(MudCommand):
 
     level = Level.IMPL
 
+
     def execute(self):
+        data = []
+        headers = ['User', 'IPAddr']
         for pid, pl in globs.sessions.items():
             try:
-                self.msg(f'{pl.player.name}: {globs.mud.get_player_ip(pid)}\r\n')
+                data.append([pl.player.name, globs.mud.get_player_ip(pid)])
             except AttributeError:
-                self.msg(f'Unidentified: {globs.mud.get_player_ip(pid)}\r\n')
-        self.msg(f'{len(globs.sessions.items())} connected Users')
+                data.append(['Unidentified', globs.mud.get_player_ip(pid)])
+        table = tabulate(data, headers)
+        msg = f'{table}\r\nTotal Connected Users: {len(globs.sessions.items())}'
+        self.msg(msg)
