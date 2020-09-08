@@ -16,7 +16,7 @@ class Interpreter:
     def all_subclasses(self, cls):
         for importer, modname, ispkg in pkgutil.iter_modules(settings.CMD_PATHS):
             # Classes have to be imported for subclass detection to work.
-            importlib.import_module('commands.cmd.' + modname)
+            importlib.import_module('alluvian.commands.cmd.' + modname)
         return set(cls.__subclasses__()).union(
             [s for c in cls.__subclasses__() for s in self.all_subclasses(c)])
 
