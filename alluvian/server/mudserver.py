@@ -143,29 +143,14 @@ class MudServer(object):
         entered the game since the last call to 'update'. Each item in
         the list is a player id number.
         """
-        retval = []
-        # go through all the events in the main list
-        for ev in self._events:
-            # if the event is a new player occurence, add the info to the list
-            if ev[0] == self._EVENT_NEW_PLAYER:
-                retval.append(ev[1])
-        # return the info list
-        return retval
+        return [ev[1] for ev in self._events if ev[0] == self._EVENT_NEW_PLAYER]
 
     def get_disconnected_players(self):
         """Returns a list containing info on any players that have left
         the game since the last call to 'update'. Each item in the list
         is a player id number.
         """
-        retval = []
-        # go through all the events in the main list
-        for ev in self._events:
-            # if the event is a player disconnect occurence, add the info to
-            # the list
-            if ev[0] == self._EVENT_PLAYER_LEFT:
-                retval.append(ev[1])
-        # return the info list
-        return retval
+        return [ev[1] for ev in self._events if ev[0] == self._EVENT_PLAYER_LEFT]
 
     def get_commands(self):
         """Returns a list containing any commands sent from players
@@ -175,14 +160,7 @@ class MudServer(object):
         they typed), and another string containing the text after the
         command
         """
-        retval = []
-        # go through all the events in the main list
-        for ev in self._events:
-            # if the event is a command occurence, add the info to the list
-            if ev[0] == self._EVENT_COMMAND:
-                retval.append((ev[1], ev[2], ev[3]))
-        # return the info list
-        return retval
+        return [(ev[1], ev[2], ev[3]) for ev in self._events if ev[0] == self._EVENT_COMMAND]
 
     def send_message(self, to, message):
         """Sends the text in the 'message' parameter to the player with
