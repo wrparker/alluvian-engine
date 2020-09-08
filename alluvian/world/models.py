@@ -17,6 +17,6 @@ class Room(models.Model):
     def has_exits(self):
         exits = [att for att in dir(self) if att.startswith('exit_')]
         for exit in exits:
-            if exit:
+            if getattr(self, exit):
                 return True
         return False

@@ -1,4 +1,12 @@
 [
+    {
+    "model": "world.room",
+    "pk": 0,
+    "fields": {
+        "name": "Void",
+        "description": "There doesn't seem to be anything here."
+    }
+  },
   {
     "model": "world.room",
     "pk": 1,
