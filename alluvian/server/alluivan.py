@@ -31,7 +31,7 @@ from world.models import Room
 import alluvian.globals
 
 # Initialize global variables
-alluvian.globals.players = {}
+alluvian.globals.sessions = {}
 alluvian.globals.rooms = {}
 alluvian.globals.interpreter = Interpreter()
 
@@ -59,7 +59,7 @@ while True:
         # The dictionary key is the player's id number. We set their room to
         # None initially until they have entered a name
         # Try adding more player stats - level, gold, inventory, etc
-        alluvian.globals.players[id] = ConnectionSession()
+        alluvian.globals.sessions[id] = ConnectionSession()
 
         # send the new player a prompt for their name
         mud.send_message(id, "By what name do you wish to be known?")
@@ -69,28 +69,28 @@ while True:
 
         # if for any reason the player isn't in the player map, skip them and
         # move on to the next one
-        if id not in alluvian.globals.players:
+        if id not in alluvian.globals.sessions:
             continue
 
         # go through all the players in the game
-        for pid, pl in alluvian.globals.players.items():
+        for pid, pl in alluvian.globals.sessions.items():
             # send each player a message to tell them about the diconnected
             # player
             mud.send_message(pid, "{} quit the game".format(
-                                                        alluvian.globals.players[id].name))
+                                                        alluvian.globals.sessions[id].name))
 
         # remove the player's entry in the player dictionary
-        del(alluvian.globals.players[id])
+        del(alluvian.globals.sessions[id])
 
     # go through any new commands sent from players
     for id, command, params in mud.get_commands():
 
         # if for any reason the player isn't in the player map, skip them and
         # move on to the next one
-        if id not in alluvian.globals.players:
+        if id not in alluvian.globals.sessions:
             continue
 
-        connection_session = alluvian.globals.players[id]
+        connection_session = alluvian.globals.sessions[id]
 
         # Character Login/Creation Handler
         if not connection_session.login_state == LoginState.AUTHENTICATED:  # Login Menu
@@ -104,7 +104,7 @@ while True:
             if not command:
                 mud.send_message(id, "\r\n")
                 continue
-            cmd = alluvian.globals.interpreter.cmd_search(command, alluvian.globals.players[id].player)
+            cmd = alluvian.globals.interpreter.cmd_search(command, alluvian.globals.sessions[id].player)
             if cmd:
                 cmd(actor=id,
                     arguments=params).execute()

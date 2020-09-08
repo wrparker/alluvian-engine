@@ -24,7 +24,7 @@ class NewConnectionMenu(object):
     command: str
 
     def __init__(self, id, command):
-        self.session = alluvian.globals.players[id]
+        self.session = alluvian.globals.sessions[id]
         self.id = id
         self.command = command.lower()
 
@@ -78,7 +78,7 @@ class NewConnectionMenu(object):
         if self.session.bad_auth_attempts >= MAX_PASSWORD_ATTEMPTS:
             alluvian.globals.mud.send_message(self.id, "Exceeded allowed password attempts, hacking attempt logged...")
             alluvian.globals.mud.close_socket(self.id)
-            del (alluvian.globals.players[self.id])
+            del (alluvian.globals.sessions[self.id])
         elif not player.check_pw(self.command):
             self.session.bad_auth_attempts = self.session.bad_auth_attempts + 1
             alluvian.globals.mud.send_message(self.id, "Wrong password, try again: ")
@@ -95,12 +95,12 @@ class NewConnectionMenu(object):
         return
 
     def check_logged_in(self):
-        for idx, sess in enumerate(alluvian.globals.players):
-            sess = alluvian.globals.players.get(idx)
+        for idx, sess in enumerate(alluvian.globals.sessions):
+            sess = alluvian.globals.sessions.get(idx)
             if not sess:
                 return False
             if idx != self.id and sess.login_state == LoginState.AUTHENTICATED and sess.player.name == self.session.name:
-                self.session = copy.deepcopy(alluvian.globals.players[idx])
+                self.session = copy.deepcopy(alluvian.globals.sessions[idx])
                 alluvian.globals.mud.send_message(idx, "Multiple login detected, disconnecting you.")
                 alluvian.globals.mud.close_socket(idx)
                 alluvian.globals.mud.send_message(self.id, "You take over your own body, already in use!")

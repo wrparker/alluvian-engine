@@ -10,5 +10,5 @@ class Gecho(MudCommand):
     level = Level.IMM
 
     def execute(self):
-        for pid, pl in alluvian.globals.players.items():
+        for pid, pl in alluvian.globals.sessions.items():
             self.mud_server.send_message(pid, self.arguments)

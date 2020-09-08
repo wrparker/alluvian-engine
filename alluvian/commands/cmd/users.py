@@ -10,9 +10,9 @@ class Users(MudCommand):
     level = Level.IMPL
 
     def execute(self):
-        for pid, pl in globs.players.items():
+        for pid, pl in globs.sessions.items():
             try:
                 self.msg(f'{pl.player.name}: {globs.mud.get_player_ip(pid)}\r\n')
             except AttributeError:
                 self.msg(f'Unidentified: {globs.mud.get_player_ip(pid)}\r\n')
-        self.msg(f'{len(globs.players.items())} connected Users')
+        self.msg(f'{len(globs.sessions.items())} connected Users')

@@ -9,7 +9,7 @@ class Who(MudCommand):
     aliases = []
 
     def execute(self):
-        logged_in = [pl for pid, pl in alluvian.globals.players.items() if pl.login_state == LoginState.AUTHENTICATED]
+        logged_in = [pl for pid, pl in alluvian.globals.sessions.items() if pl.login_state == LoginState.AUTHENTICATED]
         msg = 'Level\tName\r\n'
         msg += '=============================================================\r\n'
         for pl in logged_in:

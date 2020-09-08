@@ -1,6 +1,6 @@
 from alluvian.commands.mud_command import MudCommand
 
-from alluvian.globals import players
+from alluvian.globals import sessions
 
 from commands.cmd.look import Look
 
@@ -10,7 +10,7 @@ class Movement(MudCommand):
     aliases = []
 
     def execute(self):
-        user = players[self.actor]
+        user = sessions[self.actor]
         room = user.player.room
 
         if getattr(room, f'exit_{self.key}'):
