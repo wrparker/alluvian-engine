@@ -1,7 +1,7 @@
 from enum import IntEnum
 
 import logging
-import copy
+from util.utils import copy_obj
 import alluvian.globals
 from players.models import Player
 
@@ -85,9 +85,9 @@ class NewConnectionMenu(object):
         else:
             alluvian.globals.mud.send_message(self.id, "Logging you in ... \r\n")
             self.session.player = player
-            self.session.player.room = PLAYER_START_ROOM
             self.session.login_state = LoginState.AUTHENTICATED
             if not self.check_logged_in():
+                self.session.player.room = PLAYER_START_ROOM  # dont reset start if player loging in from new session
                 alluvian.globals.interpreter.exec_cmd(self.id, 'Look')
             alluvian.globals.mud.send_message(self.id, '\r\n')
 
@@ -95,18 +95,16 @@ class NewConnectionMenu(object):
         return
 
     def check_logged_in(self):
-        for idx, sess in enumerate(alluvian.globals.sessions):
-            sess = alluvian.globals.sessions.get(idx)
+        for idx, sess in alluvian.globals.sessions.items():
             if not sess:
                 return False
             if idx != self.id and sess.login_state == LoginState.AUTHENTICATED and sess.player.name == self.session.name:
-                self.session = copy.deepcopy(alluvian.globals.sessions[idx])
+                copy_obj(alluvian.globals.sessions[idx], self.session)
                 alluvian.globals.mud.send_message(idx, "Multiple login detected, disconnecting you.")
                 alluvian.globals.mud.close_socket(idx)
                 alluvian.globals.mud.send_message(self.id, "You take over your own body, already in use!")
                 return True
         return False
-
 
 
 
