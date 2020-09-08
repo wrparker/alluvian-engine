@@ -28,7 +28,7 @@ class MudCommand(object):
         self.player = self.session.player
 
     def call_command(self, cmd_class, arguments=None):
-        cmd_class(self.actor, self.arguments).execute()
+        cmd_class(self.actor, arguments).execute()
 
     def help(self):
         return """
@@ -47,5 +47,5 @@ class MudCommand(object):
                 alluvian.globals.mud.send_message(connection_id, msg)
 
     def get_players_in_room(self) -> Dict[str, Player]:
-        # TODO: probably should have utility funciton that gets logged in players only.
+        # TODO: probably should have utility function that gets logged in players only.
         return {k: v for k, v in alluvian.globals.sessions.items() if hasattr(v.player, 'room') and v.player.room.id == self.room.id}
