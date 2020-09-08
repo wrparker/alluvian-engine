@@ -9,7 +9,7 @@ class Look(MudCommand):
     aliases = ['l', 'loo']
 
     def execute(self):
-        user = glob.players[self.actor]
+        user = glob.sessions[self.actor]
 
         msg = f'{Colors.fg.BCYAN}{user.player.room.name}{Colors.style.RESET_ALL}\r\n' \
               f'{Colors.fg.CYAN}{user.player.room.description}{Colors.style.RESET_ALL}\r\n'

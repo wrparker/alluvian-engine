@@ -418,3 +418,7 @@ class MudServer(object):
 
         # return the contents of 'message' which is either a string or None
         return message
+
+    def get_player_ip(self, id):
+        return self._clients[id].address
+

@@ -23,7 +23,7 @@ class MudCommand(object):
     def __init__(self, actor, arguments=None):
         self.actor = actor
         self.arguments = arguments
-        self.session = alluvian.globals.players[actor]
+        self.session = alluvian.globals.sessions[actor]
         self.room = self.session.player.room
         self.player = self.session.player
 
@@ -48,4 +48,4 @@ class MudCommand(object):
 
     def get_players_in_room(self) -> Dict[str, Player]:
         # TODO: probably should have utility funciton that gets logged in players only.
-        return {k: v for k, v in alluvian.globals.players.items() if hasattr(v.player, 'room') and v.player.room.id == self.room.id}
+        return {k: v for k, v in alluvian.globals.sessions.items() if hasattr(v.player, 'room') and v.player.room.id == self.room.id}

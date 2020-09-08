@@ -1,1 +1,1 @@
-python3.8 src/simplemud.py
+PYTHONPATH=$PYTHONPATH:./alluvian python3.8 alluvian/

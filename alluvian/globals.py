@@ -1,4 +1,4 @@
 mud = None
-players = {}
+sessions = {}
 rooms = {}
 interpreter = None

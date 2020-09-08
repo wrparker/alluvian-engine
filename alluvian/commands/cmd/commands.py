@@ -9,7 +9,7 @@ class Commands(MudCommand):
     aliases = ['command', 'cmd']
 
     def execute(self):
-        commands = [c for c in glob.interpreter.cmd_list if glob.players[self.actor].player.level >= c['level']]
+        commands = [c for c in glob.interpreter.cmd_list if glob.sessions[self.actor].player.level >= c['level']]
         msg = "The following commands are available to you: \r\n"
 
         for idx, command in enumerate(commands):
