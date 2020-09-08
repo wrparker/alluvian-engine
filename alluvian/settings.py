@@ -124,5 +124,8 @@ STATIC_URL = '/static/'
 
 # DJANGO SETTINGS ABOVE
 # ----------------------------
-# MUD SETTINGS
+
+# MUD SETTINGS BELOW
+# ----------------------
 CMD_PATHS = [os.path.join(BASE_DIR, 'alluvian', 'commands', 'cmd')]
+MAX_LINE_WIDTH = 78
