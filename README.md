@@ -21,7 +21,7 @@ Getting Started
 4. Install requirements: `pip install -r requirements.txt`
 5. Run migrations: `python manage.py migrate`
 6. Load world into db: `python manage.py loaddata lib/world/rooms.json`
-7. Run the mudserver: `python alluvian/server/alluvian.py`
+7. Run the mudserver: `python alluvian/server/alluvian.py`  (You will need to make sure that the `alluvian` folder is part of your python path)
 
 
 
