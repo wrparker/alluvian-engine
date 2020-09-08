@@ -20,10 +20,10 @@ class Goto(MudCommand):
             try:
                 room_id = int(self.arguments.split()[0])
                 if globs.rooms[room_id]:
-                    self.msg_room(f'{Colors.fg.BRED}{globs.sessions[self.actor].player.name} disappears in a puff of smoke.{Colors.style.RESET_ALL}')
+                    self.msg_room(f'{Colors.fg.BRED}{globs.sessions[self.actor].player.name} disappears in a puff of smoke.{Colors.style.RESET_ALL}\r\n')
                     globs.sessions[self.actor].player.room = room_id
                     self.room = globs.sessions[self.actor].player.room
-                    self.msg_room(f'{Colors.fg.BRED}{globs.sessions[self.actor].player.name} appears with an ear-splitting bang.{Colors.style.RESET_ALL}')
+                    self.msg_room(f'{Colors.fg.BRED}{globs.sessions[self.actor].player.name} appears with an ear-splitting bang.{Colors.style.RESET_ALL}\r\n')
                     self.call_command(Look)
             except (IndexError, KeyError):
                 self.msg("That room number does not exist.")
