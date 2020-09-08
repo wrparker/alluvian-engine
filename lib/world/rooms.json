@@ -5,7 +5,8 @@
     "fields": {
         "name": "Bazookia's keep",
         "description": "This is where baz hangs out",
-        "exit_north": 2
+        "exit_north": 2,
+        "exit_up": 3
     }
   },
   {
@@ -15,6 +16,15 @@
         "name": "Bazookia second place",
         "description": "This is the other room",
         "exit_south": 1
+    }
+  },
+  {
+    "model": "world.room",
+    "pk": 3,
+    "fields": {
+      "name": "Stairs",
+      "description": "The staircase",
+      "exit_down": 1
     }
   }
 ]

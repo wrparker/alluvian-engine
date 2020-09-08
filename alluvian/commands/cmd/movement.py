@@ -38,3 +38,11 @@ class East(Movement):
 class West(Movement):
     key = 'west'
     aliases = ['w', 'we', 'wes']
+
+class Up(Movement):
+    key = 'up'
+    aliases = ['u']
+
+class Down(Movement):
+    key = 'down'
+    aliases = ['d', 'dow']
