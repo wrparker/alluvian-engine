@@ -25,20 +25,12 @@ class Look(MudCommand):
         if not self.room.has_exits():
             msg += f'{Colors.fg.BWHITE}None.'
         else:
-            if self.room.exit_north:
-                msg += f'north\t - {glob.rooms[self.room.exit_north].name}\r\n'
-            if self.room.exit_east:
-                msg += f'east\t - {glob.rooms[self.room.exit_east].name}\r\n'
-            if self.room.exit_west:
-                msg += f'west\t - {glob.rooms[self.room.exit_west].name}\r\n'
-            if self.room.exit_south:
-                msg += f'south\t - {glob.rooms[self.room.exit_south].name}\r\n'
-            if self.room.exit_up:
-                msg += f'up\t - {glob.rooms[self.room.exit_up].name}\r\n'
-            if self.room.exit_down:
-                msg += f'down\t - {glob.rooms[self.room.exit_down].name}\r\n'
+            exits = [att for att in dir(self.room) if att.startswith('exit_')]
+            for exit in exits:
+                if getattr(self.room, exit):
+                    direction = exit.replace("exit_", "")
+                    msg += f'{direction}\t - {glob.rooms[getattr(self.room, exit)].name}\r\n'
         msg += Colors.style.RESET_ALL
-
         self.msg(msg)
 
 
