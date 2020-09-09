@@ -16,7 +16,7 @@ Requirements
 Getting Started
 --------------
 1. Navigate to project root
-2. Create a virtual-environment with python3.8 `virtualenv -p python38 venv`
+2. Create a virtual-environment with python3.8 `virtualenv -p python3.8 venv`
 3. Activate your virtualenv: `source venv/bin/activate`
 4. Install requirements: `pip install -r requirements.txt`
 5. Run migrations: `python manage.py migrate`
