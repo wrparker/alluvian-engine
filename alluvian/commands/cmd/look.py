@@ -3,6 +3,7 @@ from alluvian.commands.mud_command import MudCommand
 import alluvian.globals as glob
 
 from util.colors import Colors
+from util.asciimap import show_map
 
 class Look(MudCommand):
     key = 'look'
@@ -14,6 +15,7 @@ class Look(MudCommand):
         msg = f'{Colors.fg.BCYAN}{user.player.room.name}{Colors.style.RESET_ALL}\r\n' \
               f'{Colors.fg.CYAN}{user.player.room.description}{Colors.style.RESET_ALL}\r\n'
 
+        msg += show_map(self.room) + '\r\n'
         # Get all players that are not the current player.
         for connection_id, player in self.get_players_in_room().items():
             if connection_id != self.actor:
