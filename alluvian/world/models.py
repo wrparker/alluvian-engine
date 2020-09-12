@@ -2,9 +2,15 @@ from django.db import models
 
 from players.models import Player
 
-class Room(models.Model):
 
+class Zone(models.Model):
     id = models.AutoField(primary_key=True)
+    name = models.CharField(max_length=255)
+
+
+class Room(models.Model):
+    id = models.AutoField(primary_key=True)
+    zone = models.ForeignKey(Zone, on_delete=models.CASCADE)
     name = models.CharField(max_length=255)
     description = models.TextField()
     exit_north = models.IntegerField(null=True, blank=True)

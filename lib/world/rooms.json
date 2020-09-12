@@ -1,8 +1,18 @@
 [
+
+  {
+    "model": "world.zone",
+    "pk": 0,
+    "fields": {
+        "name": "Void"
+    }
+  },
+
     {
     "model": "world.room",
     "pk": 0,
     "fields": {
+        "zone_id": 0,
         "name": "Void",
         "description": "There doesn't seem to be anything here."
     }
@@ -11,6 +21,7 @@
     "model": "world.room",
     "pk": 1,
     "fields": {
+        "zone_id": 0,
         "name": "Bazookia's keep",
         "description": "This is where baz hangs out",
         "exit_north": 2,
@@ -21,6 +32,7 @@
     "model": "world.room",
     "pk": 2,
     "fields": {
+        "zone_id": 0,
         "name": "Bazookia second place",
         "description": "This is the other room",
         "exit_south": 1
@@ -30,6 +42,7 @@
     "model": "world.room",
     "pk": 3,
     "fields": {
+      "zone_id": 0,
       "name": "Stairs",
       "description": "The staircase",
       "exit_down": 1

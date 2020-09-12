@@ -39,7 +39,7 @@ class MudCommand(object):
         self.msg('Huh?!')
 
     def msg(self, msg) -> None:
-        alluvian.globals.mud.send_message(self.actor, msg)
+        alluvian.globals.mud.send_message(self.actor, str(msg))
 
     def msg_room(self, msg) -> None:
         for connection_id, player in self.get_players_in_room().items():
