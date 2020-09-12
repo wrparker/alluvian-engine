@@ -37,9 +37,9 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'players', # player module.
-    'world',
-    'server', # needed for db,
+    'players',  # player module.
+    'world',    # World Information
+    'server',   # needed for db,
 ]
 
 MIDDLEWARE = [
@@ -127,5 +127,6 @@ STATIC_URL = '/static/'
 
 # MUD SETTINGS BELOW
 # ----------------------
-CMD_PATHS = [os.path.join(BASE_DIR, 'alluvian', 'commands', 'cmd')]
+CMD_PATHS = [(os.path.join(BASE_DIR, 'alluvian', 'commands', 'cmd'), 'alluvian.commands.cmd'),
+             (os.path.join(BASE_DIR, 'alluvian', 'commands', 'wizard'), 'alluvian.commands.wizard')]
 MAX_LINE_WIDTH = 78

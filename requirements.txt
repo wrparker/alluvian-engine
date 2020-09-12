@@ -1,4 +1,5 @@
 asgiref==3.2.10
+beautifultable==1.0.0
 bcrypt==3.1.7
 cffi==1.14.1
 Django==3.1
@@ -10,4 +11,3 @@ python-editor==1.0.4
 pytz==2020.1
 six==1.15.0
 sqlparse==0.3.1
-tabulate==0.8.7
