@@ -55,10 +55,13 @@ while True:
     # go through any newly connected players
     for id in mud.get_new_players():
         alluvian.globals.sessions[id] = ConnectionSession()
-        Protocol.negotiate_ttype(id)
-        Protocol.negotiate_mxp(id)
-            # Protocol.start_mxp(id)
-            # print("OK!")
+        client = Protocol.negotiate_ttype(id)
+        alluvian.globals.sessions[id].client = client
+
+        if Protocol.negotiate_mxp(id):
+            Protocol.start_mxp(id)
+            alluvian.globals.sessions[id] = True
+
         mud.send_message(id, "By what name do you wish to be known?")
 
 
