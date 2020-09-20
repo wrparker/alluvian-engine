@@ -60,9 +60,9 @@ while True:
 
         if Protocol.negotiate_mxp(id):
             Protocol.start_mxp(id)
-            alluvian.globals.sessions[id] = True
+            alluvian.globals.sessions[id].MXP = True
 
-        mud.send_message(id, "By what name do you wish to be known?")
+        mud.send_message(id, "\r\nBy what name do you wish to be known?")
 
 
     # go through any recently disconnected players
