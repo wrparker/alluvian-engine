@@ -26,6 +26,7 @@ from alluvian.server.mudserver import MudServer
 from alluvian.commands.interpreter import Interpreter
 from menus.new_connection import NewConnectionMenu, LoginState
 from alluvian.server.connection_session import ConnectionSession
+from alluvian.server.protocol import Protocol
 from world.models import Room
 
 import alluvian.globals
@@ -53,16 +54,13 @@ while True:
 
     # go through any newly connected players
     for id in mud.get_new_players():
-
-        # add the new player to the dictionary, noting that they've not been
-        # named yet.
-        # The dictionary key is the player's id number. We set their room to
-        # None initially until they have entered a name
-        # Try adding more player stats - level, gold, inventory, etc
         alluvian.globals.sessions[id] = ConnectionSession()
-
-        # send the new player a prompt for their name
+        Protocol.negotiate_ttype(id)
+        Protocol.negotiate_mxp(id)
+            # Protocol.start_mxp(id)
+            # print("OK!")
         mud.send_message(id, "By what name do you wish to be known?")
+
 
     # go through any recently disconnected players
     for id in mud.get_disconnected_players():
