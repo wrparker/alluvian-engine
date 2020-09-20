@@ -20,7 +20,7 @@ class Users(MudCommand):
             try:
                 table.rows.append([pid, pl.player.name, globs.mud.get_player_ip(pid)])
             except AttributeError:
-                table.rows.append(['Unidentified', globs.mud.get_player_ip(pid)])
+                table.rows.append([pid, 'Unidentified', globs.mud.get_player_ip(pid)])
         msg = f'{table}\r\n\r\n'
         msg += f'{len(table.rows)} visible Sockets connected'
         self.msg(msg)
