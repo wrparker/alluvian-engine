@@ -10,6 +10,9 @@ class ConnectionSession:
     player: Player
     bad_auth_attempts: int
     login_state: LoginState
+    client: str
+    MXP: bool
+    ANSI: bool
 
     def __init__(self):
         self.name = None
@@ -17,6 +20,9 @@ class ConnectionSession:
         self.player = None
         self.bad_auth_attempts = 0
         self.login_state = LoginState.GET_NAME
+        self.client = None
+        self.MXP = False
+        self.ANSI = False
 
     @property
     def name(self) -> str:

@@ -11,12 +11,15 @@ _LOG = logging.getLogger(__name__)
 
 MAX_PASSWORD_ATTEMPTS = 3
 
+
+
 class LoginState(IntEnum):
-    GET_NAME = 0
-    NEW_PLAYER_PROMPT = 1
-    NEW_PLAYER_PASSWORD = 2
-    PASSWORD_INPUT = 3
-    AUTHENTICATED = 4
+    PROTOCOL_NEGOTIATE = 0
+    GET_NAME = 1
+    NEW_PLAYER_PROMPT = 2
+    NEW_PLAYER_PASSWORD = 3
+    PASSWORD_INPUT = 4
+    AUTHENTICATED = 5
 
 
 class NewConnectionMenu(object):

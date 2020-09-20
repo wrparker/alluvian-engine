@@ -208,6 +208,9 @@ class MudServer(object):
         except socket.error:
             self._handle_disconnect(clid)
 
+    def write_byte_array(self, clid, data):
+        self._clients[clid].socket.sendall(data)
+
     def _check_for_new_connections(self):
 
         # 'select' is used to check whether there is data waiting to be read
@@ -234,7 +237,9 @@ class MudServer(object):
         # construct a new _Client object to hold info about the newly connected
         # client. Use 'nextid' as the new client's id number
         self._clients[self._nextid] = MudServer._Client(joined_socket, addr[0],
-                                                        "", time.time())
+                                                        '', time.time())
+
+
 
         # add a new player occurence to the new events list with the player's
         # id number
